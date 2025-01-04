@@ -1,7 +1,8 @@
 package com.example;  
 
-import org.junit.Test;  
-import static org.junit.Assert.*;  
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+ 
 
 public class CalculatorTest {  
     private Calculator calculator = new Calculator();  
