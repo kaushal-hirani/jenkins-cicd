@@ -1,53 +1,72 @@
-pipeline {
-    agent any
-    tools {
-        maven 'Maven'
-        jdk 'JDK17'
-    }
-    stages {
-        stage('Checkout') {
-            steps {
-                git url: 'https://github.com/your-repo.git', branch: 'main'
-            }
-        }
-        stage('Code Quality') {
-            steps {
-                script {
-                    withSonarQubeEnv('SonarQube') {
-                        sh 'mvn sonar:sonar'
-                    }
-                }
-            }
-        }
-        stage('Code Coverage') {
-            steps {
-                sh 'mvn clean verify'
-                publishHTML(target: [reportName: 'JaCoCo Report', reportDir: 'target/site/jacoco', reportFiles: 'index.html'])
-            }
-        }
-        stage('Cyclomatic Complexity') {
-            steps {
-                sh 'lizard . > lizard-report.txt'
-                archiveArtifacts artifacts: 'lizard-report.txt'
-            }
-        }
-        stage('Security Scan') {
-            steps {
-                sh 'dependency-check --scan . --format HTML --out dependency-check-report.html'
-                publishHTML(target: [reportName: 'OWASP Report', reportDir: '.', reportFiles: 'dependency-check-report.html'])
-            }
-        }
-    }
-    post {
-        success {
-            mail to: 'youremail@example.com',
-                 subject: 'Build Successful: ${env.JOB_NAME}',
-                 body: 'Build ${env.BUILD_NUMBER} was successful!'
-        }
-        failure {
-            mail to: 'youremail@example.com',
-                 subject: 'Build Failed: ${env.JOB_NAME}',
-                 body: 'Build ${env.BUILD_NUMBER} failed. Check the console output for more details.'
-        }
-    }
+pipeline {  
+    agent any  
+    
+    tools {  
+        jdk 'JDK17'  
+        maven 'Maven3'  
+    }  
+    
+    stages {  
+        stage('Git Checkout') {  
+            steps {  
+                git branch: 'main',   
+                    credentialsId: 'github-credentials',   
+                    url: 'https://github.com/your-username/cicd-demo-project.git'  
+            }  
+        }  
+        
+        stage('Build') {  
+            steps {  
+                sh 'mvn clean compile'  
+            }  
+        }  
+        
+        stage('Test') {  
+            steps {  
+                sh 'mvn test'  
+            }  
+            post {  
+                always {  
+                    junit 'target/surefire-reports/*.xml'  
+                }  
+            }  
+        }  
+        
+        stage('SonarQube Analysis') {  
+            steps {  
+                withSonarQubeEnv('SonarServer') {  
+                    sh 'mvn sonar:sonar'  
+                }  
+            }  
+        }  
+        
+        stage('JaCoCo Coverage') {  
+            steps {  
+                jacoco execPattern: 'target/jacoco.exec'  
+            }  
+        }  
+        
+        stage('Package') {  
+            steps {  
+                sh 'mvn package'  
+            }  
+        }  
+    }  
+    
+    post {  
+        success {  
+            emailext (  
+                subject: "Build Successful: ${currentBuild.fullDisplayName}",  
+                body: "Great job! Build completed successfully.",  
+                to: "your-email@example.com"  
+            )  
+        }  
+        failure {  
+            emailext (  
+                subject: "Build Failed: ${currentBuild.fullDisplayName}",  
+                body: "Build failed. Please check the Jenkins console for details.",  
+                to: "your-email@example.com"  
+            )  
+        }  
+    }  
 }
