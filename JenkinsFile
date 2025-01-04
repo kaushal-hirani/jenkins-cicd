@@ -11,7 +11,7 @@ pipeline {
             steps {  
                 git branch: 'main',   
                     credentialsId: 'github-credentials',   
-                    url: 'https://github.com/your-username/cicd-demo-project.git'  
+                    url: 'https://github.com/kaushal-hirani/jenkins-cicd.git'  
             }  
         }  
         
@@ -58,14 +58,14 @@ pipeline {
             emailext (  
                 subject: "Build Successful: ${currentBuild.fullDisplayName}",  
                 body: "Great job! Build completed successfully.",  
-                to: "your-email@example.com"  
+                to: "kaushalhirani007@gmail.com"  
             )  
         }  
         failure {  
             emailext (  
                 subject: "Build Failed: ${currentBuild.fullDisplayName}",  
                 body: "Build failed. Please check the Jenkins console for details.",  
-                to: "your-email@example.com"  
+                to: "kaushalhirani007@gmail.com"  
             )  
         }  
     }  
