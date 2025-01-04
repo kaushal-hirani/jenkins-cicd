@@ -1,4 +1,3 @@
-# File: src/main/java/com/example/Calculator.java  
 package com.example;  
 
 public class Calculator {  
