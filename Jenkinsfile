@@ -1,4 +1,4 @@
-pipeline {  
+pipeline {
     agent any  
     
     tools {  
@@ -17,7 +17,7 @@ pipeline {
         
         stage('Build') {  
             steps {  
-                sh 'mvn clean compile'  
+                sh 'mvn clean install'  // Use install instead of compile for build & test  
             }  
         }  
         
@@ -27,7 +27,7 @@ pipeline {
             }  
             post {  
                 always {  
-                    junit 'target/surefire-reports/*.xml'  
+                    junit '**/target/surefire-reports/*.xml'  // Ensure the path matches test report location  
                 }  
             }  
         }  
@@ -42,7 +42,7 @@ pipeline {
         
         stage('JaCoCo Coverage') {  
             steps {  
-                jacoco execPattern: 'target/jacoco.exec'  
+                jacoco execPattern: '**/target/jacoco.exec'  // Ensure the path matches generated coverage file  
             }  
         }  
         
