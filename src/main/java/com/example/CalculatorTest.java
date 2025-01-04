@@ -1,3 +1,4 @@
+// src/test/java/com/example/CalculatorTest.java
 package com.example;
 
 import org.junit.jupiter.api.Test;
@@ -5,30 +6,45 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class CalculatorTest {
 
-    private final Calculator calculator = new Calculator();
+    private Calculator calculator = new Calculator();
 
     @Test
-    public void testAdd() {
-        assertEquals(5, calculator.add(2, 3));
+    void testAdd() {
+        assertEquals(15, calculator.add(10, 5));
     }
 
     @Test
-    public void testSubtract() {
-        assertEquals(1, calculator.subtract(3, 2));
+    void testSubtract() {
+        assertEquals(5, calculator.subtract(10, 5));
     }
 
     @Test
-    public void testMultiply() {
-        assertEquals(6, calculator.multiply(2, 3));
+    void testMultiply() {
+        assertEquals(50, calculator.multiply(10, 5));
     }
 
     @Test
-    public void testDivide() {
-        assertEquals(2.5, calculator.divide(5, 2), 0.001);
+    void testDivide() {
+        assertEquals(2, calculator.divide(10, 5));
     }
 
     @Test
-    public void testDivideByZero() {
-        assertThrows(ArithmeticException.class, () -> calculator.divide(5, 0));
+    void testDivideByZero() {
+        assertThrows(ArithmeticException.class, () -> calculator.divide(10, 0));
+    }
+
+    @Test
+    void testFactorial() {
+        assertEquals(120, calculator.factorial(5));
+    }
+
+    @Test
+    void testFactorialZero() {
+        assertEquals(1, calculator.factorial(0));
+    }
+
+    @Test
+    void testFactorialNegative() {
+        assertThrows(IllegalArgumentException.class, () -> calculator.factorial(-1));
     }
 }
